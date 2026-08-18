@@ -1,33 +1,60 @@
-import { fetchPosts } from '@repo/api/blog';
-import Link from 'next/link';
+import Link from 'next/link'
+import { Suspense } from 'react'
+import { FilterControls } from './filter-controls'
 
-export default async function BlogHomePage() {
-  const posts = await fetchPosts(10);
+type Props = {
+  searchParams: Promise<{
+    category?: string
+    sort?: string
+    page?: string
+  }>
+}
+
+// Mock data
+const allPosts = [
+  { id: '1', slug: 'hello-world', title: 'Hello World', category: 'general' },
+  { id: '2', slug: 'nextjs-routing', title: 'Next.js Routing', category: 'tech' },
+  { id: '3', slug: 'react-tips', title: 'React Tips', category: 'tech' },
+]
+
+export default async function BlogListingPage({ searchParams }: Props) {
+  const { category, sort, page } = await searchParams
+
+  let posts = category
+    ? allPosts.filter((p) => p.category === category)
+    : allPosts
+
+  if (sort === 'title') {
+    posts = [...posts].sort((a, b) => a.title.localeCompare(b.title))
+  }
+
+  const currentPage = parseInt(page || '1', 10)
 
   return (
-    <main className="flex flex-col gap-8">
-      <h1 className="font-bold text-4xl">Blog</h1>
+    <div className="mx-auto max-w-2xl p-6">
+      <h1 className="mb-4 text-2xl font-bold">
+        Blog Posts {category && <span className="text-gray-500">in {category}</span>}
+      </h1>
 
-      <div className="flex flex-col gap-6">
+      <Suspense fallback={<div className="h-10 animate-pulse bg-gray-100" />}>
+        <FilterControls currentCategory={category} currentSort={sort} />
+      </Suspense>
+
+      <ul className="mt-6 space-y-4">
         {posts.map((post) => (
-          <article key={post.id} className="flex flex-col gap-2 border-b pb-6">
-            <Link href={`/${post.slug}`} className="hover:underline">
-              <h2 className="font-semibold text-2xl">{post.title}</h2>
-            </Link>
-            <p className="text-sm text-gray-500">
-              {post.category} · {post.readingTime} min read ·{' '}
-              {post.publishedAt.toLocaleDateString()}
-            </p>
-            <p className="text-gray-700">{post.excerpt}</p>
+          <li key={post.id}>
             <Link
               href={`/${post.slug}`}
-              className="text-sm text-blue-600 hover:underline"
+              className="block rounded-lg border p-4 hover:bg-gray-50"
             >
-              Read more →
+              <h2 className="font-semibold">{post.title}</h2>
+              <span className="text-sm text-gray-500">{post.category}</span>
             </Link>
-          </article>
+          </li>
         ))}
-      </div>
-    </main>
-  );
+      </ul>
+
+      <p className="mt-4 text-sm text-gray-500">Page {currentPage}</p>
+    </div>
+  )
 }

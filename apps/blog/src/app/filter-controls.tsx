@@ -1,68 +1,80 @@
-'use client';
+'use client'
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback } from 'react';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
+import { useCallback } from 'react'
 
 type Props = {
-  categories: string[];
-  currentCategory?: string;
-  currentSort?: string;
-};
+  currentCategory?: string
+  currentSort?: string
+}
 
-export function FilterControls({ categories, currentCategory, currentSort }: Props) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+export function FilterControls({ currentCategory, currentSort }: Props) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
 
   // Create a new URLSearchParams instance preserving existing params
   const createQueryString = useCallback(
     (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParams.toString())
       if (value) {
-        params.set(name, value);
+        params.set(name, value)
       } else {
-        params.delete(name);
+        params.delete(name)
       }
       // Reset pagination when filters change
       if (name !== 'page') {
-        params.delete('page');
+        params.delete('page')
       }
-      return params.toString();
+      return params.toString()
     },
     [searchParams]
-  );
+  )
 
   const handleCategoryChange = (category: string) => {
-    const qs = createQueryString('category', category);
-    router.push(qs ? `${pathname}?${qs}` : pathname);
-  };
+    router.push(`${pathname}?${createQueryString('category', category)}`)
+  }
 
   const handleSortChange = (sort: string) => {
-    const qs = createQueryString('sort', sort);
-    router.push(qs ? `${pathname}?${qs}` : pathname);
-  };
+    router.push(`${pathname}?${createQueryString('sort', sort)}`)
+  }
 
   const clearFilters = () => {
-    router.push(pathname);
-  };
+    router.push(pathname)
+  }
 
   return (
-    <div className="flex flex-wrap items-center gap-4">
-      {/* Category filter */}
-      <select
-        value={currentCategory || ''}
-        onChange={(e) => handleCategoryChange(e.target.value)}
-        className="rounded border px-3 py-1 text-sm"
-      >
-        <option value="">All categories</option>
-        {categories.map((category) => (
-          <option key={category} value={category}>
-            {category}
-          </option>
-        ))}
-      </select>
+    <div className="flex flex-wrap gap-4">
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => handleCategoryChange('')}
+          className={`rounded px-3 py-1 text-sm ${
+            !currentCategory ? 'bg-blue-600 text-white' : 'bg-gray-100'
+          }`}
+        >
+          All
+        </button>
+        <button
+          type="button"
+          onClick={() => handleCategoryChange('tech')}
+          className={`rounded px-3 py-1 text-sm ${
+            currentCategory === 'tech' ? 'bg-blue-600 text-white' : 'bg-gray-100'
+          }`}
+        >
+          Tech
+        </button>
+        <button
+          type="button"
+          onClick={() => handleCategoryChange('general')}
+          className={`rounded px-3 py-1 text-sm ${
+            currentCategory === 'general' ? 'bg-blue-600 text-white' : 'bg-gray-100'
+          }`}
+        >
+          General
+        </button>
+      </div>
 
-      {/* Sort control */}
       <select
         value={currentSort || ''}
         onChange={(e) => handleSortChange(e.target.value)}
@@ -72,7 +84,6 @@ export function FilterControls({ categories, currentCategory, currentSort }: Pro
         <option value="title">Sort by title</option>
       </select>
 
-      {/* Clear all filters */}
       {(currentCategory || currentSort) && (
         <button
           type="button"
@@ -83,5 +94,5 @@ export function FilterControls({ categories, currentCategory, currentSort }: Pro
         </button>
       )}
     </div>
-  );
+  )
 }
