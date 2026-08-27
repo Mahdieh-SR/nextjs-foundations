@@ -1,61 +1,77 @@
-'use server'
+'use server';
 
-import { z } from 'zod'
+import { updateTag } from 'next/cache';
+import { z } from 'zod';
+import {
+  CONTACT_MESSAGES_TAG,
+  saveContactMessage,
+} from '@/lib/server/contact-store';
 
-// Define validation schema
+// Validation runs on the server, so it cannot be skipped from the client.
 const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
+  email: z.email('Invalid email address'),
   message: z.string().min(10, 'Message must be at least 10 characters'),
-})
+});
 
-// Type for form state
-type FormState = {
-  success?: boolean
-  message?: string
+export type ContactFormValues = {
+  name: string;
+  email: string;
+  message: string;
+};
+
+export type ContactFormState = {
+  success?: boolean;
+  message?: string;
   errors?: {
-    name?: string[]
-    email?: string[]
-    message?: string[]
-  }
-}
+    name?: string[];
+    email?: string[];
+    message?: string[];
+  };
+  /**
+   * What the user submitted, echoed back so the form can refill itself after a
+   * failed attempt. Without this the no-JavaScript path loses everything the
+   * user typed on every validation error.
+   */
+  values?: ContactFormValues;
+};
 
 export async function submitContactForm(
-  prevState: FormState,
+  _prevState: ContactFormState,
   formData: FormData
-): Promise<FormState> {
-  // Extract form data
-  const rawData = {
-    name: formData.get('name'),
-    email: formData.get('email'),
-    message: formData.get('message'),
-  }
+): Promise<ContactFormState> {
+  const values: ContactFormValues = {
+    name: String(formData.get('name') ?? ''),
+    email: String(formData.get('email') ?? ''),
+    message: String(formData.get('message') ?? ''),
+  };
 
-  // Validate with Zod
-  const validatedFields = contactSchema.safeParse(rawData)
+  const validatedFields = contactSchema.safeParse(values);
 
-  // Return validation errors if any
   if (!validatedFields.success) {
     return {
-      errors: validatedFields.error.flatten().fieldErrors,
-    }
+      errors: z.flattenError(validatedFields.error).fieldErrors,
+      values,
+    };
   }
 
-  // Simulate API call or database operation
   try {
-    // In production: await db.contacts.create(validatedFields.data)
-    // In production: await sendEmail(validatedFields.data)
+    await saveContactMessage(validatedFields.data);
 
-    console.log('Contact form submitted:', validatedFields.data)
+    // Read-your-own-writes: expire the cached list so the message this request
+    // just stored is visible in the response it renders.
+    updateTag(CONTACT_MESSAGES_TAG);
 
     return {
       success: true,
       message: 'Message sent successfully!',
-    }
-  } catch (error) {
-    console.error('Contact form error:', error)
+    };
+  } catch {
+    // The real error stays on the server; the client gets a safe summary and
+    // keeps its input so the attempt can be retried.
     return {
       message: 'Failed to send message. Please try again.',
-    }
+      values,
+    };
   }
 }
