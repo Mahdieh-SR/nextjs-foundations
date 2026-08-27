@@ -1,3 +1,5 @@
+import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 import { Inter, JetBrains_Mono } from 'next/font/google';
 import { OG_SITE_DEFAULTS, SITE_NAME, SITE_ORIGIN } from '@/lib/site';
@@ -75,6 +77,15 @@ export default function RootLayout({
             `,
           }}
         />
+
+        {/*
+          Field data from real visits. Speed Insights reports the Core Web
+          Vitals that Google ranks on; Analytics reports page views. Both are
+          no-ops off Vercel, so local runs are unaffected — the console output
+          and /api/analytics/vitals below are what you read during development.
+        */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
