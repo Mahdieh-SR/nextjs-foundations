@@ -1,7 +1,28 @@
 import type { Metadata } from 'next';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import { BLOG_BASE_PATH, SITE_ORIGIN } from '@/lib/site';
 
 import './globals.css';
+
+/**
+ * The same two families as the web app, so the zone does not change typeface
+ * when a visitor crosses from the main site into /blog. Each app downloads and
+ * serves its own copy at build time — they deploy separately, so there is no
+ * shared bundle to put them in.
+ */
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+  adjustFontFallback: true,
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-jetbrains-mono',
+  display: 'swap',
+  adjustFontFallback: true,
+});
 
 export const metadata: Metadata = {
   /**
@@ -39,8 +60,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="container mx-auto px-4 py-8">{children}</body>
+    <html className={`${inter.variable} ${jetbrainsMono.variable}`} lang="en">
+      <body className="container mx-auto px-4 py-8 font-sans">{children}</body>
     </html>
   );
 }
