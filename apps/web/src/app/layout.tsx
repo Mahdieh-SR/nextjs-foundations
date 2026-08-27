@@ -1,3 +1,4 @@
+import { GoogleAnalytics } from '@next/third-parties/google';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
@@ -51,6 +52,12 @@ export const metadata: Metadata = {
   },
 };
 
+/**
+ * Unset by default: the placeholder id the layout used to hard-code made every
+ * visit request a tag that does not exist.
+ */
+const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -62,28 +69,30 @@ export default function RootLayout({
     <html className={`${inter.variable} ${jetbrainsMono.variable}`} lang="en">
       <body className="container mx-auto px-4 py-8 font-sans">
         {children}
-        {/* TODO: Convert to next/script (Section 4 Lesson 3) */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'GA_MEASUREMENT_ID');
-            `,
-          }}
-        />
 
         {/*
-          Field data from real visits. Speed Insights reports the Core Web
-          Vitals that Google ranks on; Analytics reports page views. Both are
-          no-ops off Vercel, so local runs are unaffected — the console output
-          and /api/analytics/vitals below are what you read during development.
+          Third-party scripts on every page. Each one is here because something
+          needs it, loads after the page is interactive, and can be removed by
+          unsetting one variable.
+
+          Google Analytics — product analytics, page views and events.
+            Owner: marketing. Strategy: afterInteractive, via
+            @next/third-parties, which owns the gtag bootstrap so we do not.
+            Loads only when NEXT_PUBLIC_GA_ID is set, so nothing is requested
+            in development or in a fork that has not configured it.
+
+          Vercel Analytics — page views. Owner: the team. Strategy: the
+            component's own deferred load. No-op outside Vercel.
+
+          Vercel Speed Insights — Core Web Vitals from real visits. Owner: the
+            team. Strategy: the component's own deferred load. No-op outside
+            Vercel; locally the same metrics go to /api/analytics/vitals
+            through src/instrumentation-client.ts.
+
+          Nothing here is a remote polyfill service, and nothing runs before
+          hydration.
         */}
+        {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
         <Analytics />
         <SpeedInsights />
       </body>
