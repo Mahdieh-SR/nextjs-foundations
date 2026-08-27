@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
 export function ClientEnvDisplay() {
-  const [clicks, setClicks] = useState(0)
+  const [clicks, setClicks] = useState(0);
 
-  const handleClick = () => setClicks(clicks + 1)
+  const handleClick = () => setClicks(clicks + 1);
 
   const internalConfig =
-    typeof window === 'undefined' ? undefined : process.env.INTERNAL_CONFIG
+    typeof window === 'undefined' ? undefined : process.env.INTERNAL_CONFIG;
 
   return (
     <div className="rounded border p-4">
@@ -16,12 +16,12 @@ export function ClientEnvDisplay() {
       <p>Public: {process.env.NEXT_PUBLIC_APP_NAME}</p>
       <p>Server-only: {internalConfig || 'undefined'}</p>
       <button
-        type="button"
-        onClick={handleClick}
         className="mt-2 rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600"
+        onClick={handleClick}
+        type="button"
       >
         Clicked {clicks} times
       </button>
     </div>
-  )
+  );
 }

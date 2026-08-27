@@ -1,5 +1,5 @@
 // apps/web/src/app/dashboard/layout.tsx
-import Link from "next/link";
+import Link from 'next/link';
 
 export default function DashboardLayout({
   children,
@@ -12,29 +12,26 @@ export default function DashboardLayout({
         <h2 className="mb-4 font-bold text-lg">Dashboard</h2>
         <nav className="space-y-2">
           <Link
-            href="/dashboard"
             className="block rounded px-3 py-2 text-gray-700 hover:bg-gray-200"
+            href="/dashboard"
           >
             Overview
           </Link>
           <Link
-            href="/dashboard/analytics"
             className="block rounded px-3 py-2 text-gray-700 hover:bg-gray-200"
+            href="/dashboard/analytics"
           >
             Analytics
           </Link>
           <Link
-            href="/dashboard/settings"
             className="block rounded px-3 py-2 text-gray-700 hover:bg-gray-200"
+            href="/dashboard/settings"
           >
             Settings
           </Link>
         </nav>
         <div className="mt-8 border-t pt-4">
-          <Link
-            href="/"
-            className="text-gray-500 text-sm hover:text-gray-700"
-          >
+          <Link className="text-gray-500 text-sm hover:text-gray-700" href="/">
             ← Back to site
           </Link>
         </div>

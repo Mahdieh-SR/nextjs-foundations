@@ -1,15 +1,21 @@
 export default function MarketingLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <div className="min-h-screen">
       <header className="mb-8 border-b py-4">
         <nav className="flex gap-4">
-          <a href="/" className="font-semibold">Home</a>
-          <a href="/about" className="text-gray-600 hover:text-gray-900">About</a>
-          <a href="/pricing" className="text-gray-600 hover:text-gray-900">Pricing</a>
+          <a className="font-semibold" href="/">
+            Home
+          </a>
+          <a className="text-gray-600 hover:text-gray-900" href="/about">
+            About
+          </a>
+          <a className="text-gray-600 hover:text-gray-900" href="/pricing">
+            Pricing
+          </a>
         </nav>
       </header>
       <main>{children}</main>
@@ -17,5 +23,5 @@ export default function MarketingLayout({
         © 2026 Next.js Foundations
       </footer>
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
 // Server Component - demonstrates boundary pattern in blog app
 
-import { Counter } from '@/components/counter'
+import { Counter } from '@/components/counter';
 
 export default function BoundaryDemoPage() {
   return (
@@ -15,7 +15,7 @@ export default function BoundaryDemoPage() {
       {/* Server-rendered content */}
       <section className="rounded-lg border bg-muted/50 p-6">
         <h2 className="font-semibold text-lg">Server Content</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="mt-2 text-muted-foreground text-sm">
           This article preview renders server-side with zero JavaScript.
         </p>
       </section>
@@ -26,5 +26,5 @@ export default function BoundaryDemoPage() {
         <Counter initialCount={10} />
       </section>
     </main>
-  )
+  );
 }

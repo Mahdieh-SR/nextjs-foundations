@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
 export default function NotFound() {
   return (
@@ -9,11 +9,11 @@ export default function NotFound() {
         The page you're looking for doesn't exist or has been moved.
       </p>
       <Link
-        href="/"
         className="rounded bg-gray-900 px-6 py-3 font-medium text-white hover:bg-gray-800"
+        href="/"
       >
         Go home
       </Link>
     </div>
-  )
+  );
 }

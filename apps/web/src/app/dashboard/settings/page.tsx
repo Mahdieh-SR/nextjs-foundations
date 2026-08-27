@@ -12,7 +12,7 @@ export default function SettingsPage() {
         <div className="rounded-lg border p-4">
           <h2 className="mb-2 font-semibold">Notifications</h2>
           <label className="flex items-center gap-2">
-            <input type="checkbox" className="rounded" />
+            <input className="rounded" type="checkbox" />
             <span>Email notifications</span>
           </label>
         </div>

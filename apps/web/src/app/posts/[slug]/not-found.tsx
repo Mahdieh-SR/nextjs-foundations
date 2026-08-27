@@ -1,5 +1,5 @@
 // apps/web/src/app/posts/[slug]/not-found.tsx
-import Link from "next/link";
+import Link from 'next/link';
 
 export default function PostNotFound() {
   return (
@@ -13,14 +13,14 @@ export default function PostNotFound() {
       </p>
       <div className="flex gap-4">
         <Link
-          href="/posts"
           className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          href="/posts"
         >
           Browse Posts
         </Link>
         <Link
-          href="/"
           className="rounded border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
+          href="/"
         >
           Go Home
         </Link>
