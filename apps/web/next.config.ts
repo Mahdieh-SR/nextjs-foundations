@@ -27,6 +27,29 @@ const nextConfig: NextConfig = {
     products: { stale: 300, revalidate: 900, expire: 3600 },
   },
 
+  images: {
+    /**
+     * next/image only optimises hosts named here. `remotePatterns` rather than
+     * the deprecated `domains`, because it can pin the protocol and path too,
+     * so an allowed host cannot be used to proxy arbitrary URLs.
+     */
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+        pathname: '/**',
+      },
+    ],
+
+    // Served in preference order, falling back to the original when a browser
+    // supports neither.
+    formats: ['image/avif', 'image/webp'],
+
+    // Only these quality values may be requested; anything else is rejected
+    // rather than becoming a new cache entry an attacker can fill.
+    qualities: [75, 80, 85],
+  },
+
   /**
    * Multi-zone routing: /blog is served by a separate Next.js app, proxied so
    * the browser URL never leaves this domain. A redirect would move the user
