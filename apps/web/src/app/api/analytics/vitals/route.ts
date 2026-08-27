@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { clientKey, rateLimit } from '@/lib/rate-limit';
 
 /**
  * Receives one Core Web Vitals measurement per request.
@@ -20,6 +21,18 @@ const vitalsSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  // A page reports at most a handful of measurements per visit, so anything
+  // past this is not a browser. Writing to the server log on demand is the
+  // thing being protected here.
+  const limit = rateLimit(`vitals:${clientKey(request)}`, {
+    limit: 30,
+    windowMs: 60_000,
+  });
+
+  if (!limit.allowed) {
+    return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+  }
+
   let body: unknown;
 
   try {
