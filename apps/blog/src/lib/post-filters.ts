@@ -28,7 +28,7 @@ export type Post = {
   readingTime: number;
   tags: string[];
   author: { name: string };
-  /** Absolute URL, 1200x630, so social crawlers can fetch it as-is. */
+  /** 1200x630, relative to the site origin; metadataBase makes it absolute. */
   coverImage: string;
 };
 

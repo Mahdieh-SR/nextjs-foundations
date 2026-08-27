@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   Close,
@@ -9,16 +9,15 @@ import {
   Root,
   Title,
   Trigger,
-} from '@radix-ui/react-dialog'
-import { X } from 'lucide-react'
-import type { ComponentPropsWithoutRef, ReactNode } from 'react'
-
-import { cn } from '@repo/ui/lib/utils'
+} from '@radix-ui/react-dialog';
+import { cn } from '@repo/ui/lib/utils';
+import { X } from 'lucide-react';
+import type { ComponentPropsWithoutRef } from 'react';
 
 // Re-export Root and Trigger directly (no customization needed)
-const DialogRoot = Root
-const DialogTrigger = Trigger
-const DialogClose = Close
+const DialogRoot = Root;
+const DialogTrigger = Trigger;
+const DialogClose = Close;
 
 /**
  * Dialog.Overlay - Covers the screen behind the dialog
@@ -37,7 +36,7 @@ function DialogOverlay({
       )}
       {...props}
     />
-  )
+  );
 }
 
 /**
@@ -70,7 +69,7 @@ function DialogContent({
           className={cn(
             'absolute top-4 right-4 rounded-sm opacity-70',
             'ring-offset-background transition-opacity hover:opacity-100',
-            'focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none',
+            'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
             'disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground'
           )}
         >
@@ -79,7 +78,7 @@ function DialogContent({
         </Close>
       </Content>
     </Portal>
-  )
+  );
 }
 
 /**
@@ -94,7 +93,7 @@ function DialogHeader({
       className={cn('flex flex-col gap-2 text-center sm:text-left', className)}
       {...props}
     />
-  )
+  );
 }
 
 /**
@@ -112,7 +111,7 @@ function DialogFooter({
       )}
       {...props}
     />
-  )
+  );
 }
 
 /**
@@ -124,10 +123,13 @@ function DialogTitle({
 }: ComponentPropsWithoutRef<typeof Title>) {
   return (
     <Title
-      className={cn('font-semibold text-lg leading-none tracking-tight', className)}
+      className={cn(
+        'font-semibold text-lg leading-none tracking-tight',
+        className
+      )}
       {...props}
     />
-  )
+  );
 }
 
 /**
@@ -142,7 +144,7 @@ function DialogDescription({
       className={cn('text-muted-foreground text-sm', className)}
       {...props}
     />
-  )
+  );
 }
 
 // Export individual components (required for Server Component compatibility)
@@ -155,4 +157,4 @@ export {
   DialogRoot,
   DialogTitle,
   DialogTrigger,
-}
+};

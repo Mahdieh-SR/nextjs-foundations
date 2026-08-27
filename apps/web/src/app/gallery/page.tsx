@@ -1,40 +1,37 @@
 import Image, { getImageProps } from 'next/image';
-import { gradientPlaceholder } from '@/lib/image-utils';
+import dusk from '../../../public/gallery/dusk.png';
+import ember from '../../../public/gallery/ember.png';
+import heroTall from '../../../public/gallery/hero-tall.png';
+import heroWide from '../../../public/gallery/hero-wide.png';
+import moss from '../../../public/gallery/moss.png';
+import slate from '../../../public/gallery/slate.png';
+
+/**
+ * Static imports rather than remote URLs.
+ *
+ * A remote image makes the page depend on another host being reachable, and
+ * its blur placeholder has to be supplied by hand because there is no file to
+ * read. Importing the file gives Next its intrinsic width and height and lets
+ * it generate `blurDataURL` from the image itself — the placeholder becomes a
+ * real low-resolution preview rather than a stand-in.
+ *
+ * These are generated gradients, not photographs;
+ * scripts/generate-gallery-images.mjs rebuilds them.
+ */
 
 const images = [
-  {
-    id: 'mountain',
-    src: 'https://picsum.photos/seed/mountain/800/600',
-    alt: 'Mountain landscape',
-    blurDataURL: gradientPlaceholder([104, 122, 138], [178, 190, 200]),
-  },
-  {
-    id: 'ocean',
-    src: 'https://picsum.photos/seed/ocean/800/600',
-    alt: 'Ocean sunset',
-    blurDataURL: gradientPlaceholder([201, 122, 78], [64, 78, 116]),
-  },
-  {
-    id: 'forest',
-    src: 'https://picsum.photos/seed/forest/800/600',
-    alt: 'Forest path',
-    blurDataURL: gradientPlaceholder([62, 88, 58], [140, 156, 106]),
-  },
-  {
-    id: 'city',
-    src: 'https://picsum.photos/seed/city/800/600',
-    alt: 'City skyline',
-    blurDataURL: gradientPlaceholder([70, 78, 94], [168, 176, 190]),
-  },
+  { id: 'slate', src: slate, alt: 'Gradient in slate blue and pale grey' },
+  { id: 'ember', src: ember, alt: 'Gradient from ember orange into deep blue' },
+  { id: 'moss', src: moss, alt: 'Gradient in moss green' },
+  { id: 'dusk', src: dusk, alt: 'Gradient from dusk blue into pale violet' },
 ];
 
 /**
  * Art direction, which is a different problem from responsive sizing.
  *
  * Responsive sizing serves the same picture at the width it will be drawn at.
- * Art direction serves a *different* picture: a wide landscape crop reads as a
- * letterbox strip on a phone, so narrow viewports get a portrait crop of the
- * same scene instead.
+ * Art direction serves a *different* picture: a wide crop reads as a letterbox
+ * strip on a phone, so narrow viewports get a tall crop instead.
  *
  * `getImageProps` gives the srcset the optimiser would have produced, which is
  * then attached to <source> elements the browser chooses between. Each source
@@ -49,41 +46,30 @@ const images = [
  * which on the LCP element cancels out the priority it was just given.
  */
 function HeroWithArtDirection() {
-  const common = { alt: 'Featured landscape', sizes: '100vw', quality: 85 };
+  const common = { alt: 'Gradient from deep blue into warm sand', quality: 85 };
 
   const {
-    props: { srcSet: desktopSrcSet },
-  } = getImageProps({
-    ...common,
-    src: 'https://picsum.photos/seed/gallery-hero-wide/1440/600',
-    width: 1440,
-    height: 600,
-  });
+    props: { srcSet: wideSrcSet },
+  } = getImageProps({ ...common, src: heroWide, sizes: '100vw' });
 
   const {
-    props: { srcSet: portraitSrcSet, ...fallback },
-  } = getImageProps({
-    ...common,
-    src: 'https://picsum.photos/seed/gallery-hero-tall/750/900',
-    width: 750,
-    height: 900,
-  });
+    props: { srcSet: tallSrcSet, ...fallback },
+  } = getImageProps({ ...common, src: heroTall, sizes: '100vw' });
 
   return (
     <picture>
       <source
-        height={600}
+        height={heroWide.height}
         media="(min-width: 1024px)"
-        srcSet={desktopSrcSet}
-        width={1440}
+        srcSet={wideSrcSet}
+        width={heroWide.width}
       />
       <source
-        height={900}
+        height={heroTall.height}
         media="(max-width: 1023px)"
-        srcSet={portraitSrcSet}
-        width={750}
+        srcSet={tallSrcSet}
+        width={heroTall.width}
       />
-      {/* biome-ignore lint/performance/noImgElement: art direction needs <picture>, which next/image does not render */}
       <img
         {...fallback}
         alt={common.alt}
@@ -109,16 +95,14 @@ export default function GalleryPage() {
         Below the fold, so these stay lazy.
 
         Two columns with a 1rem gap inside the 832px content box means 408px
-        each. Each one now paints its placeholder immediately instead of
-        holding an empty box: the aspect-ratio wrapper already reserved the
-        space, and the blur fills it.
+        each. Each one paints its blur preview immediately instead of holding
+        an empty box: the aspect-ratio wrapper already reserved the space.
       */}
       <div className="grid grid-cols-2 gap-4">
         {images.map((image) => (
           <div className="relative aspect-[4/3]" key={image.id}>
             <Image
               alt={image.alt}
-              blurDataURL={image.blurDataURL}
               className="rounded-lg object-cover"
               fill
               placeholder="blur"
@@ -134,8 +118,8 @@ export default function GalleryPage() {
         <h2 className="mb-2 font-semibold">What next/image does here</h2>
         <ul className="list-inside list-disc text-gray-600 text-sm">
           <li>Serves AVIF or WebP, falling back to the original format</li>
-          <li>Gives the hero a landscape crop and phones a portrait one</li>
-          <li>Fills each box with a blur until the photograph arrives</li>
+          <li>Gives the hero a wide crop and narrow viewports a tall one</li>
+          <li>Fills each box with a blur preview built from the file itself</li>
           <li>Picks a width from `sizes` instead of shipping the full file</li>
           <li>Reserves space through the aspect-ratio wrapper, so no shift</li>
         </ul>

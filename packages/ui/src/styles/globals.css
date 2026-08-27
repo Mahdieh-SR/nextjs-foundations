@@ -1,8 +1,8 @@
 @import "tailwindcss";
-
-@source "../";
-
 @import "tw-animate-css";
+
+/* @import has to come before any other rule, so @source follows them. */
+@source "../";
 
 :root {
   --background: oklch(1 0 0);
