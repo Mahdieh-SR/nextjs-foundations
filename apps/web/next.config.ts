@@ -45,9 +45,25 @@ const nextConfig: NextConfig = {
     // supports neither.
     formats: ['image/avif', 'image/webp'],
 
+    /**
+     * Widths generated for images that span a share of the viewport, aligned
+     * with Tailwind's breakpoints (sm 640, md 768, lg 1024, xl 1280, 2xl 1536)
+     * plus one above them.
+     *
+     * The default list sits at 640/750/828/1080/1200/1920/2048/3840, which
+     * generates variants between our breakpoints that no layout ever asks for.
+     * Aligning them costs a little at high DPR — a 408px column at DPR 2 now
+     * picks 1024 where it used to find 828 — and buys a cache that is not
+     * spread across widths nothing renders at.
+     */
+    deviceSizes: [640, 768, 1024, 1280, 1536, 1920],
+
+    /** Widths for images sized by their component: avatars, thumbnails, icons. */
+    imageSizes: [32, 48, 64, 96, 128, 192, 256],
+
     // Only these quality values may be requested; anything else is rejected
     // rather than becoming a new cache entry an attacker can fill.
-    qualities: [75, 80, 85],
+    qualities: [75, 85],
   },
 
   /**
