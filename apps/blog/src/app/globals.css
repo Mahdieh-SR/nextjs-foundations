@@ -1,3 +1,23 @@
 @import "tailwindcss";
 
 @import "@repo/ui/globals.css";
+
+/*
+  Point Tailwind's font utilities at the variables next/font sets in layout.tsx.
+
+  `@theme inline` rather than a plain `@theme`: inline keeps the var()
+  references as written instead of resolving them at build time, which is what
+  lets the values come from the class on <html> at runtime. In Tailwind 4 this
+  also has to be a theme block rather than `@layer base`, because a utility
+  like `font-mono` would otherwise win over a base-layer declaration.
+
+  The stacks after each variable are the fallbacks used while the font loads —
+  next/font's adjustFontFallback scales their metrics to match, so the swap
+  does not move any text.
+*/
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji";
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, Menlo,
+    Monaco, Consolas, "Liberation Mono", monospace;
+}
