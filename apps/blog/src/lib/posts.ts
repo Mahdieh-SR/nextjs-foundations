@@ -22,6 +22,9 @@ const POSTS: Post[] = [
     category: 'general',
     publishedAt: '2026-08-01',
     readingTime: 2,
+    tags: ['announcement', 'meta'],
+    author: { name: 'Ada Lovelace' },
+    coverImage: 'https://picsum.photos/seed/hello-world/1200/630',
   },
   {
     id: '2',
@@ -33,6 +36,9 @@ const POSTS: Post[] = [
     category: 'tech',
     publishedAt: '2026-07-24',
     readingTime: 6,
+    tags: ['nextjs', 'routing', 'app-router'],
+    author: { name: 'Grace Hopper' },
+    coverImage: 'https://picsum.photos/seed/nextjs-routing/1200/630',
   },
   {
     id: '3',
@@ -44,6 +50,9 @@ const POSTS: Post[] = [
     category: 'tech',
     publishedAt: '2026-07-11',
     readingTime: 4,
+    tags: ['react', 'components', 'patterns'],
+    author: { name: 'Margaret Hamilton' },
+    coverImage: 'https://picsum.photos/seed/react-tips/1200/630',
   },
   {
     id: '4',
@@ -55,6 +64,9 @@ const POSTS: Post[] = [
     category: 'tech',
     publishedAt: '2026-06-30',
     readingTime: 5,
+    tags: ['nextjs', 'urls', 'state'],
+    author: { name: 'Grace Hopper' },
+    coverImage: 'https://picsum.photos/seed/search-params-as-state/1200/630',
   },
   {
     id: '5',
@@ -66,6 +78,9 @@ const POSTS: Post[] = [
     category: 'design',
     publishedAt: '2026-06-18',
     readingTime: 3,
+    tags: ['design', 'ux', 'content'],
+    author: { name: 'Barbara Liskov' },
+    coverImage: 'https://picsum.photos/seed/designing-empty-states/1200/630',
   },
   {
     id: '6',
@@ -77,6 +92,9 @@ const POSTS: Post[] = [
     category: 'tech',
     publishedAt: '2026-06-02',
     readingTime: 7,
+    tags: ['typescript', 'validation', 'urls'],
+    author: { name: 'Barbara Liskov' },
+    coverImage: 'https://picsum.photos/seed/type-safe-urls/1200/630',
   },
   {
     id: '7',
@@ -88,6 +106,9 @@ const POSTS: Post[] = [
     category: 'general',
     publishedAt: '2026-05-21',
     readingTime: 3,
+    tags: ['writing', 'process', 'release'],
+    author: { name: 'Ada Lovelace' },
+    coverImage: 'https://picsum.photos/seed/writing-good-changelogs/1200/630',
   },
 ];
 

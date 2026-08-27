@@ -26,6 +26,10 @@ export type Post = {
   category: Category;
   publishedAt: string;
   readingTime: number;
+  tags: string[];
+  author: { name: string };
+  /** Absolute URL, 1200x630, so social crawlers can fetch it as-is. */
+  coverImage: string;
 };
 
 export type Comment = {

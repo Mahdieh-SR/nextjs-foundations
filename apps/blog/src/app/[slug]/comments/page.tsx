@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
@@ -8,6 +9,7 @@ import {
   sortComments,
 } from '@/lib/post-filters';
 import { getComments, getPostBySlug, getPostSlugs } from '@/lib/posts';
+import { commentsPath } from '@/lib/site';
 
 type Props = {
   // Identity (which post?) comes from the dynamic segment...
@@ -25,6 +27,27 @@ export async function generateStaticParams() {
   const slugs = await getPostSlugs();
 
   return slugs.map((slug) => ({ slug }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
+
+  if (!post) {
+    return {
+      title: 'Post Not Found',
+      robots: { index: false, follow: false },
+    };
+  }
+
+  return {
+    title: `Comments on ${post.title}`,
+    description: `Readers' comments on ${post.title}.`,
+    alternates: { canonical: commentsPath(slug) },
+    // The sorted view is the same content in another order: keep it out of the
+    // index rather than competing with the post itself.
+    robots: { index: false, follow: true },
+  };
 }
 
 /**

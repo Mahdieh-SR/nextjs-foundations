@@ -1,10 +1,23 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
+import { OG_SITE_DEFAULTS, SITE_NAME, SITE_ORIGIN } from '@/lib/site';
 
-import "./globals.css";
+import './globals.css';
 
 export const metadata: Metadata = {
-  title: process.env.NEXT_PUBLIC_APP_NAME || "Vercel Academy Foundation - Web",
-  description: "VAF Web",
+  // Resolves every relative metadata URL in this app into an absolute one.
+  metadataBase: new URL(SITE_ORIGIN),
+  title: {
+    template: `%s | ${SITE_NAME}`,
+    default: SITE_NAME,
+  },
+  description: 'VAF Web',
+  openGraph: {
+    ...OG_SITE_DEFAULTS,
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
 };
 
 export default function RootLayout({
@@ -18,8 +31,8 @@ export default function RootLayout({
         {children}
         {/* TODO: Convert to next/script (Section 4 Lesson 3) */}
         <script
-          src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
           async
+          src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
         />
         <script
           dangerouslySetInnerHTML={{
