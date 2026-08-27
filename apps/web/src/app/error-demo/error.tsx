@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo } from 'react';
 
 function generateCorrelationId(): string {
   return `err-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
@@ -21,10 +21,10 @@ export default function ErrorDemoBoundary({
       digest: error.digest,
       message: error.message,
       timestamp: new Date().toISOString(),
-      location: "/error-demo",
+      location: '/error-demo',
     };
     // biome-ignore lint/suspicious/noConsole: Error logging is intentional
-    console.error("Error demo boundary caught:", errorLog);
+    console.error('Error demo boundary caught:', errorLog);
   }, [error, correlationId]);
 
   return (
@@ -49,15 +49,15 @@ export default function ErrorDemoBoundary({
         )}
         <div className="flex gap-3">
           <button
-            type="button"
-            onClick={reset}
             className="rounded bg-orange-600 px-4 py-2 text-white hover:bg-orange-700"
+            onClick={reset}
+            type="button"
           >
             Try Again
           </button>
           <a
-            href="/error-demo"
             className="rounded border border-orange-600 px-4 py-2 text-orange-600 hover:bg-orange-100"
+            href="/error-demo"
           >
             Reload Page
           </a>

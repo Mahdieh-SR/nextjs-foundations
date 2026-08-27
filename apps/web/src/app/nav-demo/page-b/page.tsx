@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from 'next/link';
 
 export default function PageB() {
   return (
@@ -9,14 +9,14 @@ export default function PageB() {
       </p>
       <nav className="flex gap-4">
         <Link
-          href="/nav-demo"
           className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          href="/nav-demo"
         >
           Back to Demo
         </Link>
         <Link
-          href="/nav-demo/page-a"
           className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+          href="/nav-demo/page-a"
         >
           Go to Page A
         </Link>

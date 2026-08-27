@@ -24,7 +24,7 @@ const POSTS: Post[] = [
     readingTime: 2,
     tags: ['announcement', 'meta'],
     author: { name: 'Ada Lovelace' },
-    coverImage: 'https://picsum.photos/seed/hello-world/1200/630',
+    coverImage: '/blog/og/hello-world.png',
   },
   {
     id: '2',
@@ -38,7 +38,7 @@ const POSTS: Post[] = [
     readingTime: 6,
     tags: ['nextjs', 'routing', 'app-router'],
     author: { name: 'Grace Hopper' },
-    coverImage: 'https://picsum.photos/seed/nextjs-routing/1200/630',
+    coverImage: '/blog/og/nextjs-routing.png',
   },
   {
     id: '3',
@@ -52,7 +52,7 @@ const POSTS: Post[] = [
     readingTime: 4,
     tags: ['react', 'components', 'patterns'],
     author: { name: 'Margaret Hamilton' },
-    coverImage: 'https://picsum.photos/seed/react-tips/1200/630',
+    coverImage: '/blog/og/react-tips.png',
   },
   {
     id: '4',
@@ -66,7 +66,7 @@ const POSTS: Post[] = [
     readingTime: 5,
     tags: ['nextjs', 'urls', 'state'],
     author: { name: 'Grace Hopper' },
-    coverImage: 'https://picsum.photos/seed/search-params-as-state/1200/630',
+    coverImage: '/blog/og/search-params-as-state.png',
   },
   {
     id: '5',
@@ -80,7 +80,7 @@ const POSTS: Post[] = [
     readingTime: 3,
     tags: ['design', 'ux', 'content'],
     author: { name: 'Barbara Liskov' },
-    coverImage: 'https://picsum.photos/seed/designing-empty-states/1200/630',
+    coverImage: '/blog/og/designing-empty-states.png',
   },
   {
     id: '6',
@@ -94,7 +94,7 @@ const POSTS: Post[] = [
     readingTime: 7,
     tags: ['typescript', 'validation', 'urls'],
     author: { name: 'Barbara Liskov' },
-    coverImage: 'https://picsum.photos/seed/type-safe-urls/1200/630',
+    coverImage: '/blog/og/type-safe-urls.png',
   },
   {
     id: '7',
@@ -108,7 +108,7 @@ const POSTS: Post[] = [
     readingTime: 3,
     tags: ['writing', 'process', 'release'],
     author: { name: 'Ada Lovelace' },
-    coverImage: 'https://picsum.photos/seed/writing-good-changelogs/1200/630',
+    coverImage: '/blog/og/writing-good-changelogs.png',
   },
 ];
 

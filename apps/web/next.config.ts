@@ -29,17 +29,14 @@ const nextConfig: NextConfig = {
 
   images: {
     /**
-     * next/image only optimises hosts named here. `remotePatterns` rather than
-     * the deprecated `domains`, because it can pin the protocol and path too,
-     * so an allowed host cannot be used to proxy arbitrary URLs.
+     * Every image this app renders is a file in public/, so the optimiser has
+     * no remote host to allow and the allowlist is empty.
+     *
+     * A remote source would go here as a `remotePatterns` entry — that rather
+     * than the deprecated `domains`, because it can pin the protocol and path
+     * as well as the host, so an allowed host cannot be turned into a proxy
+     * for arbitrary URLs.
      */
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'picsum.photos',
-        pathname: '/**',
-      },
-    ],
 
     // Served in preference order, falling back to the original when a browser
     // supports neither.

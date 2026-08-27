@@ -1,12 +1,11 @@
-'use client'
+'use client';
 
-import { useState, type ReactNode } from 'react'
-
-import { Button } from '@repo/ui/components/button'
+import { Button } from '@repo/ui/components/button';
+import { type ReactNode, useState } from 'react';
 
 interface ExpandableWrapperProps {
-  children: ReactNode
-  title: string
+  children: ReactNode;
+  title: string;
 }
 
 /**
@@ -14,17 +13,17 @@ interface ExpandableWrapperProps {
  * The children prop accepts Server Components that stream through unchanged.
  */
 export function ExpandableWrapper({ children, title }: ExpandableWrapperProps) {
-  const [isExpanded, setIsExpanded] = useState(true)
+  const [isExpanded, setIsExpanded] = useState(true);
 
   return (
     <div className="rounded-lg border bg-muted/30 p-4">
       <div className="flex items-center justify-between">
         <h2 className="font-semibold text-lg">{title}</h2>
         <Button
+          onClick={() => setIsExpanded((prev) => !prev)}
+          size="sm"
           type="button"
           variant="ghost"
-          size="sm"
-          onClick={() => setIsExpanded((prev) => !prev)}
         >
           {isExpanded ? 'Collapse' : 'Expand'}
         </Button>
@@ -32,5 +31,5 @@ export function ExpandableWrapper({ children, title }: ExpandableWrapperProps) {
       {/* Server-rendered children passed through */}
       {isExpanded && <div className="mt-4">{children}</div>}
     </div>
-  )
+  );
 }

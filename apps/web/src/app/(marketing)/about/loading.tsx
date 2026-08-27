@@ -5,5 +5,5 @@ export default function Loading() {
       <div className="mb-2 h-4 w-full rounded bg-gray-200" />
       <div className="h-4 w-2/3 rounded bg-gray-200" />
     </div>
-  )
+  );
 }

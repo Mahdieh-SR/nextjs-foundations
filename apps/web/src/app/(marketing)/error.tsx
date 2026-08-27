@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
 export default function ErrorBoundary({
   error,
   reset,
 }: {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }) {
   return (
     <div className="rounded border border-red-200 bg-red-50 p-4">
@@ -14,12 +14,12 @@ export default function ErrorBoundary({
       </h2>
       <p className="mb-4 text-red-600 text-sm">{error.message}</p>
       <button
-        type="button"
-        onClick={reset}
         className="rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700"
+        onClick={reset}
+        type="button"
       >
         Try again
       </button>
     </div>
-  )
+  );
 }

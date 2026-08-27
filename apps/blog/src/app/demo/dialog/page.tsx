@@ -1,5 +1,5 @@
 // apps/blog/src/app/demo/dialog/page.tsx
-import { Button } from '@repo/ui/components/button'
+import { Button } from '@repo/ui/components/button';
 import {
   DialogClose,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogRoot,
   DialogTitle,
   DialogTrigger,
-} from '@repo/ui/components/dialog'
+} from '@repo/ui/components/dialog';
 
 export default function BlogDialogDemoPage() {
   return (
@@ -23,7 +23,7 @@ export default function BlogDialogDemoPage() {
 
       <section className="rounded-lg border bg-muted/50 p-6">
         <h2 className="font-semibold text-lg">Newsletter Signup</h2>
-        <p className="mb-4 text-sm text-muted-foreground">
+        <p className="mb-4 text-muted-foreground text-sm">
           Example: gate newsletter subscription behind a dialog.
         </p>
 
@@ -40,9 +40,9 @@ export default function BlogDialogDemoPage() {
             </DialogHeader>
             <form className="flex flex-col gap-4">
               <input
-                type="email"
-                placeholder="your@email.com"
                 className="rounded-md border bg-background px-3 py-2 text-sm"
+                placeholder="your@email.com"
+                type="email"
               />
               <DialogFooter>
                 <DialogClose asChild>
@@ -57,5 +57,5 @@ export default function BlogDialogDemoPage() {
         </DialogRoot>
       </section>
     </main>
-  )
+  );
 }
