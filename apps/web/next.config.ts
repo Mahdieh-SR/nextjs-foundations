@@ -8,9 +8,23 @@ import type { NextConfig } from 'next';
 const blogUrl = process.env.BLOG_URL ?? 'http://localhost:3001';
 
 const nextConfig: NextConfig = {
-  experimental: {
-    // Required for the `"use cache"` directive in src/lib/server/contact-store.ts.
-    useCache: true,
+  /**
+   * Cache Components: prerender a static shell for every route and fill the
+   * cached and request-time regions behind Suspense boundaries. This supersedes
+   * `experimental.useCache` — it enables the `"use cache"` directive and adds
+   * partial prerendering on top.
+   *
+   * (`partialPrefetching` from the lesson needs Next 16.3; this repo is on
+   * 16.1.1, where the option does not exist yet.)
+   */
+  cacheComponents: true,
+
+  /**
+   * Named revalidation profiles, referenced by `cacheLife('products')` and
+   * friends inside a cached scope.
+   */
+  cacheLife: {
+    products: { stale: 300, revalidate: 900, expire: 3600 },
   },
 
   /**

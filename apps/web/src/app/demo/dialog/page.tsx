@@ -1,5 +1,6 @@
 // apps/web/src/app/demo/dialog/page.tsx
-import { Button } from '@repo/ui/components/button'
+
+import { Button } from '@repo/ui/components/button';
 import {
   DialogClose,
   DialogContent,
@@ -9,16 +10,24 @@ import {
   DialogRoot,
   DialogTitle,
   DialogTrigger,
-} from '@repo/ui/components/dialog'
+} from '@repo/ui/components/dialog';
+import { cacheLife } from 'next/cache';
 
+// The terms are the same for everyone, so this belongs in the cache rather
+// than behind a Suspense boundary: reading the clock inside a cached scope is
+// allowed, and the date is stamped when the entry is produced.
+// biome-ignore lint/suspicious/useAwait: the "use cache" directive requires an async function
 async function getTermsContent(): Promise<string> {
+  'use cache';
+  cacheLife('days');
+
   return `By using this service, you agree to our terms. These terms were
-  last updated on ${new Date().toLocaleDateString()}. Server-rendered content
-  can be passed as children to client components.`
+  last updated on ${new Date().toLocaleDateString('en-US')}. Server-rendered content
+  can be passed as children to client components.`;
 }
 
 export default async function DialogDemoPage() {
-  const termsContent = await getTermsContent()
+  const termsContent = await getTermsContent();
 
   return (
     <main className="flex flex-col gap-8 p-8">
@@ -31,7 +40,7 @@ export default async function DialogDemoPage() {
 
       <section className="rounded-lg border bg-muted/50 p-6">
         <h2 className="font-semibold text-lg">Confirmation Dialog</h2>
-        <p className="mb-4 text-sm text-muted-foreground">
+        <p className="mb-4 text-muted-foreground text-sm">
           Gates a destructive action with user confirmation.
         </p>
 
@@ -65,7 +74,7 @@ export default async function DialogDemoPage() {
 
       <section className="rounded-lg border bg-muted/50 p-6">
         <h2 className="font-semibold text-lg">Server Content in Dialog</h2>
-        <p className="mb-4 text-sm text-muted-foreground">
+        <p className="mb-4 text-muted-foreground text-sm">
           Terms content fetched on server, rendered inside client dialog.
         </p>
 
@@ -96,14 +105,16 @@ export default async function DialogDemoPage() {
 
       <section className="rounded-lg border bg-muted/50 p-6">
         <h2 className="font-semibold text-lg">Accessibility Features</h2>
-        <ul className="mt-2 list-inside list-disc space-y-1 text-sm text-muted-foreground">
+        <ul className="mt-2 list-inside list-disc space-y-1 text-muted-foreground text-sm">
           <li>Focus trap: Tab cycles through dialog elements only</li>
           <li>Escape key: Closes the dialog</li>
           <li>Click outside: Closes the dialog</li>
-          <li>ARIA: Title and Description linked via aria-labelledby/describedby</li>
+          <li>
+            ARIA: Title and Description linked via aria-labelledby/describedby
+          </li>
           <li>Screen reader: Announces dialog open/close</li>
         </ul>
       </section>
     </main>
-  )
+  );
 }

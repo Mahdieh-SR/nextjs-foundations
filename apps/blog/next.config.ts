@@ -1,9 +1,16 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  experimental: {
-    // Required for the `"use cache"` directive in src/lib/posts.ts.
-    useCache: true,
+  /**
+   * Cache Components: enables the `"use cache"` directive used in
+   * src/lib/posts.ts and prerenders a static shell for every route, filling the
+   * request-time regions behind Suspense. Supersedes `experimental.useCache`.
+   */
+  cacheComponents: true,
+
+  cacheLife: {
+    // Posts change rarely; serve them stale for an hour while refreshing.
+    blog: { stale: 3600, revalidate: 86_400, expire: 604_800 },
   },
 
   /**

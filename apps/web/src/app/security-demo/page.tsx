@@ -1,9 +1,9 @@
-import { getUserDTO } from "@/lib/server/user-dto";
-import { UserCard } from "@/components/user-card";
+import { UserCard } from '@/components/user-card';
+import { getUserDTO } from '@/lib/server/user-dto';
 
-export default function SecurityDemoPage() {
+export default async function SecurityDemoPage() {
   // Server Component safely calls the Data Access Layer
-  const user = getUserDTO("user-123");
+  const user = await getUserDTO('user-123');
 
   return (
     <main className="flex flex-col gap-4 p-4">
