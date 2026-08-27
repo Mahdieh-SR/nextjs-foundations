@@ -1,31 +1,35 @@
-import { Suspense } from "react";
+import { Suspense } from 'react';
 
 // Mock data fetching functions (simulate API calls)
 async function fetchUserProfile(id: string) {
   await new Promise((resolve) => setTimeout(resolve, 200));
   return {
     id,
-    name: "Demo User",
-    email: "demo@example.com",
-    joinedAt: new Date("2024-01-15"),
+    name: 'Demo User',
+    email: 'demo@example.com',
+    joinedAt: new Date('2024-01-15'),
   };
 }
 
-async function fetchUserStats(id: string) {
+async function fetchUserStats(_id: string) {
   await new Promise((resolve) => setTimeout(resolve, 200));
   return { posts: 42, followers: 1234, following: 567 };
 }
 
-async function fetchUserActivity(id: string) {
+async function fetchUserActivity(_id: string) {
   await new Promise((resolve) => setTimeout(resolve, 200));
   return [
-    { type: "post", title: "My first post", date: new Date() },
-    { type: "comment", title: "Great article!", date: new Date() },
+    { id: 'a1', type: 'post', title: 'My first post' },
+    { id: 'a2', type: 'comment', title: 'Great article!' },
   ];
 }
 
 // TODO: This fetches SEQUENTIALLY - learner optimizes with Promise.all
-async function ProfileContent({ id }: { id: string }) {
+// `params` is awaited here rather than in the page body: awaiting it up there
+// would block the whole route instead of just this boundary.
+async function ProfileContent({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
   // INTENTIONAL: Sequential fetching (Section 4 Lesson 2 fixes this)
   const profile = await fetchUserProfile(id);
   const stats = await fetchUserStats(id);
@@ -53,8 +57,8 @@ async function ProfileContent({ id }: { id: string }) {
       <section>
         <h2 className="mb-2 font-semibold text-xl">Recent Activity</h2>
         <ul className="space-y-2">
-          {activity.map((item, i) => (
-            <li key={i} className="text-gray-700">
+          {activity.map((item) => (
+            <li className="text-gray-700" key={item.id}>
               {item.title}
             </li>
           ))}
@@ -64,19 +68,17 @@ async function ProfileContent({ id }: { id: string }) {
   );
 }
 
-export default async function ProfilePage({
+export default function ProfilePage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-
   return (
     <main className="mx-auto max-w-2xl p-8">
       <Suspense
         fallback={<div className="animate-pulse">Loading profile...</div>}
       >
-        <ProfileContent id={id} />
+        <ProfileContent params={params} />
       </Suspense>
     </main>
   );

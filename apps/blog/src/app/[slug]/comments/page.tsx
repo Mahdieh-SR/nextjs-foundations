@@ -1,11 +1,13 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
 import {
   COMMENT_SORT_OPTIONS,
+  type Comment,
   parseCommentSort,
   sortComments,
 } from '@/lib/post-filters';
-import { getComments, getPostBySlug } from '@/lib/posts';
+import { getComments, getPostBySlug, getPostSlugs } from '@/lib/posts';
 
 type Props = {
   // Identity (which post?) comes from the dynamic segment...
@@ -19,45 +21,31 @@ const SORT_LABELS: Record<string, string> = {
   top: 'Most liked',
 };
 
-export default async function PostCommentsPage({
-  params,
+export async function generateStaticParams() {
+  const slugs = await getPostSlugs();
+
+  return slugs.map((slug) => ({ slug }));
+}
+
+/**
+ * Only the ordering depends on the query string, so this is the one part that
+ * waits for a request. Everything around it prerenders per slug.
+ */
+async function SortedComments({
+  comments,
   searchParams,
-}: Props) {
-  // Both are Promises, so await them in parallel rather than one after another.
-  const [{ slug }, { sort: rawSort }] = await Promise.all([
-    params,
-    searchParams,
-  ]);
-
+  slug,
+}: {
+  comments: Comment[];
+  searchParams: Props['searchParams'];
+  slug: string;
+}) {
+  const { sort: rawSort } = await searchParams;
   const sort = parseCommentSort(rawSort);
-
-  // Independent reads, also fired in parallel.
-  const [post, comments] = await Promise.all([
-    getPostBySlug(slug),
-    getComments(slug),
-  ]);
-
-  if (!post) {
-    notFound();
-  }
-
   const visibleComments = sortComments(comments, sort);
 
   return (
-    <section className="mx-auto max-w-2xl p-6">
-      <Link
-        className="text-blue-600 text-sm hover:underline"
-        href={`/${post.slug}`}
-      >
-        ← Back to {post.title}
-      </Link>
-
-      <h1 className="mt-4 font-bold text-2xl">Comments</h1>
-      <p className="mb-4 text-gray-500 text-sm">
-        {comments.length} comment{comments.length === 1 ? '' : 's'} on “
-        {post.title}”
-      </p>
-
+    <>
       <div className="flex gap-2">
         {COMMENT_SORT_OPTIONS.map((option) => (
           <Link
@@ -66,8 +54,8 @@ export default async function PostCommentsPage({
             }`}
             href={
               option === 'newest'
-                ? `/${post.slug}/comments`
-                : `/${post.slug}/comments?sort=${option}`
+                ? `/${slug}/comments`
+                : `/${slug}/comments?sort=${option}`
             }
             key={option}
           >
@@ -95,6 +83,51 @@ export default async function PostCommentsPage({
           No comments yet.
         </p>
       )}
+    </>
+  );
+}
+
+export default async function PostCommentsPage({
+  params,
+  searchParams,
+}: Props) {
+  // `params` is known from generateStaticParams, and both reads below are
+  // cached, so the header is part of the prerendered shell.
+  const { slug } = await params;
+
+  const [post, comments] = await Promise.all([
+    getPostBySlug(slug),
+    getComments(slug),
+  ]);
+
+  if (!post) {
+    notFound();
+  }
+
+  return (
+    <section className="mx-auto max-w-2xl p-6">
+      <Link
+        className="text-blue-600 text-sm hover:underline"
+        href={`/${post.slug}`}
+      >
+        ← Back to {post.title}
+      </Link>
+
+      <h1 className="mt-4 font-bold text-2xl">Comments</h1>
+      <p className="mb-4 text-gray-500 text-sm">
+        {comments.length} comment{comments.length === 1 ? '' : 's'} on “
+        {post.title}”
+      </p>
+
+      <Suspense
+        fallback={<div className="h-10 animate-pulse rounded bg-gray-100" />}
+      >
+        <SortedComments
+          comments={comments}
+          searchParams={searchParams}
+          slug={post.slug}
+        />
+      </Suspense>
     </section>
   );
 }

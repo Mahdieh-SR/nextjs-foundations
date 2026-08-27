@@ -48,7 +48,11 @@ function listingHref(
   return query ? `/?${query}` : '/';
 }
 
-export default async function BlogListingPage({ searchParams }: Props) {
+/**
+ * Everything that depends on the query string lives here, so the heading above
+ * it can be prerendered as a static shell while this region streams in.
+ */
+async function FilteredPosts({ searchParams }: Props) {
   // `searchParams` must be awaited before any value can be read.
   const {
     category: rawCategory,
@@ -74,25 +78,14 @@ export default async function BlogListingPage({ searchParams }: Props) {
   const lastOnPage = Math.min(page * POSTS_PER_PAGE, totalPosts);
 
   return (
-    <div className="mx-auto max-w-2xl p-6">
-      <h1 className="mb-1 font-bold text-2xl">
-        Blog Posts{' '}
-        {category && <span className="text-gray-500">in {category}</span>}
-      </h1>
-      <p className="mb-4 text-gray-500 text-sm">
-        Filters, sorting and pagination all live in the URL, so this view is
-        shareable and bookmarkable.
-      </p>
-
-      {/* useSearchParams() needs a Suspense boundary above it. */}
-      <Suspense fallback={<div className="h-10 animate-pulse bg-gray-100" />}>
-        <FilterControls currentCategory={category} currentSort={sort} />
-      </Suspense>
+    <>
+      <FilterControls currentCategory={category} currentSort={sort} />
 
       <p className="mt-6 text-gray-500 text-sm">
         {totalPosts === 0
           ? 'No posts match these filters.'
           : `Showing ${firstOnPage}-${lastOnPage} of ${totalPosts} posts`}
+        {category && <span> in {category}</span>}
       </p>
 
       {posts.length > 0 ? (
@@ -156,6 +149,22 @@ export default async function BlogListingPage({ searchParams }: Props) {
           )}
         </nav>
       )}
+    </>
+  );
+}
+
+export default function BlogListingPage({ searchParams }: Props) {
+  return (
+    <div className="mx-auto max-w-2xl p-6">
+      <h1 className="mb-1 font-bold text-2xl">Blog Posts</h1>
+      <p className="mb-4 text-gray-500 text-sm">
+        Filters, sorting and pagination all live in the URL, so this view is
+        shareable and bookmarkable.
+      </p>
+
+      <Suspense fallback={<div className="h-10 animate-pulse bg-gray-100" />}>
+        <FilteredPosts searchParams={searchParams} />
+      </Suspense>
     </div>
   );
 }

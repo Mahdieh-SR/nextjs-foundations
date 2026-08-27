@@ -1,9 +1,18 @@
-import Link from "next/link";
-import { connection } from "next/server";
-import { NavigationButtons } from "./navigation-buttons";
+import Link from 'next/link';
+import { connection } from 'next/server';
+import { Suspense } from 'react';
+import { NavigationButtons } from './navigation-buttons';
 
-export default async function NavDemoPage() {
+// Only the timestamp needs a request. Awaiting connection() in the page body
+// instead would opt the whole route out of prerendering for the sake of this
+// one line.
+async function CurrentTimestamp() {
   await connection();
+
+  return <>{Date.now()}</>;
+}
+
+export default function NavDemoPage() {
   return (
     <main className="mx-auto max-w-2xl p-8">
       <h1 className="mb-6 font-bold text-3xl">Navigation Demo</h1>
@@ -19,14 +28,14 @@ export default async function NavDemoPage() {
           </p>
           <nav className="flex gap-4">
             <Link
-              href="/nav-demo/page-a"
               className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+              href="/nav-demo/page-a"
             >
               Go to Page A
             </Link>
             <Link
-              href="/nav-demo/page-b"
               className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+              href="/nav-demo/page-b"
             >
               Go to Page B
             </Link>
@@ -43,8 +52,8 @@ export default async function NavDemoPage() {
           </p>
           <nav className="flex gap-4">
             <a
-              href="/nav-demo/page-a"
               className="rounded border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-50"
+              href="/nav-demo/page-a"
             >
               Hard nav to Page A
             </a>
@@ -70,7 +79,10 @@ export default async function NavDemoPage() {
           </p>
           <div className="rounded bg-gray-100 p-4">
             <p className="text-gray-500 text-sm">
-              Current timestamp: {Date.now()}
+              Current timestamp:{' '}
+              <Suspense fallback={<>…</>}>
+                <CurrentTimestamp />
+              </Suspense>
             </p>
             <p className="text-gray-500 text-sm">
               (This updates on hard navigation but not soft navigation from
@@ -84,7 +96,8 @@ export default async function NavDemoPage() {
         <h3 className="mb-2 font-semibold">Key Concepts</h3>
         <ul className="list-inside list-disc space-y-1 text-gray-600 text-sm">
           <li>
-            <strong>Soft navigation:</strong> Client-side transitions, preserves state
+            <strong>Soft navigation:</strong> Client-side transitions, preserves
+            state
           </li>
           <li>
             <strong>Hard navigation:</strong> Full page reload, clears state

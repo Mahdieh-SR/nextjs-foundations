@@ -1,9 +1,9 @@
-import "server-only";
-import { getUserFromDB } from "./db";
+import 'server-only';
+import { getUserFromDB } from './db';
 
 // Return only safe, public fields
-export function getUserDTO(userId: string) {
-  const user = getUserFromDB(userId);
+export async function getUserDTO(userId: string) {
+  const user = await getUserFromDB(userId);
 
   // Only return fields that are safe to expose
   return {
