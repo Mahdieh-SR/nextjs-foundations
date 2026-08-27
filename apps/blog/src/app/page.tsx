@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import {
@@ -9,6 +10,7 @@ import {
   selectPosts,
 } from '@/lib/post-filters';
 import { getPosts } from '@/lib/posts';
+import { SITE_NAME } from '@/lib/site';
 import { FilterControls } from './filter-controls';
 
 type Props = {
@@ -18,6 +20,22 @@ type Props = {
     sort?: string;
     page?: string;
   }>;
+};
+
+/**
+ * Static, and deliberately not derived from `searchParams`: a filtered listing
+ * is the same collection in another order, so it should not present itself to
+ * crawlers as a separate page. The canonical from the root layout points every
+ * variation back at the unfiltered listing.
+ *
+ * The title carries the site name itself because `title.template` only reaches
+ * child segments — this page shares the root layout's segment, so a bare
+ * 'All posts' is all a crawler would see.
+ */
+export const metadata: Metadata = {
+  title: `All posts | ${SITE_NAME}`,
+  description:
+    'Every article on the VAF blog, filterable by category and sortable in place.',
 };
 
 /**
