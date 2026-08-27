@@ -1,98 +1,125 @@
-'use client'
+'use client';
 
-import { useSearchParams, useRouter, usePathname } from 'next/navigation'
-import { useCallback } from 'react'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useCallback } from 'react';
+import {
+  CATEGORIES,
+  type Category,
+  SORT_OPTIONS,
+  type Sort,
+} from '@/lib/post-filters';
 
 type Props = {
-  currentCategory?: string
-  currentSort?: string
-}
+  currentCategory?: Category;
+  currentSort: Sort;
+};
+
+const CATEGORY_LABELS: Record<Category, string> = {
+  tech: 'Tech',
+  design: 'Design',
+  general: 'General',
+};
+
+const SORT_LABELS: Record<Sort, string> = {
+  newest: 'Newest first',
+  title: 'Sort by title',
+};
 
 export function FilterControls({ currentCategory, currentSort }: Props) {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  // Create a new URLSearchParams instance preserving existing params
+  // Start from the params already in the URL so the other filters survive.
   const createQueryString = useCallback(
     (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString())
+      const params = new URLSearchParams(searchParams.toString());
+
       if (value) {
-        params.set(name, value)
+        params.set(name, value);
       } else {
-        params.delete(name)
+        params.delete(name);
       }
-      // Reset pagination when filters change
+
+      // Any filter change invalidates the current page number.
       if (name !== 'page') {
-        params.delete('page')
+        params.delete('page');
       }
-      return params.toString()
+
+      return params.toString();
     },
     [searchParams]
-  )
+  );
 
-  const handleCategoryChange = (category: string) => {
-    router.push(`${pathname}?${createQueryString('category', category)}`)
-  }
+  const navigate = (name: string, value: string) => {
+    const query = createQueryString(name, value);
 
-  const handleSortChange = (sort: string) => {
-    router.push(`${pathname}?${createQueryString('sort', sort)}`)
-  }
+    router.push(query ? `${pathname}?${query}` : pathname);
+  };
 
   const clearFilters = () => {
-    router.push(pathname)
-  }
+    router.push(pathname);
+  };
+
+  const hasFilters = Boolean(currentCategory) || currentSort !== 'newest';
 
   return (
-    <div className="flex flex-wrap gap-4">
+    <div className="flex flex-wrap items-center gap-4">
       <div className="flex gap-2">
         <button
-          type="button"
-          onClick={() => handleCategoryChange('')}
           className={`rounded px-3 py-1 text-sm ${
-            !currentCategory ? 'bg-blue-600 text-white' : 'bg-gray-100'
+            currentCategory ? 'bg-gray-100' : 'bg-blue-600 text-white'
           }`}
+          onClick={() => navigate('category', '')}
+          type="button"
         >
           All
         </button>
-        <button
-          type="button"
-          onClick={() => handleCategoryChange('tech')}
-          className={`rounded px-3 py-1 text-sm ${
-            currentCategory === 'tech' ? 'bg-blue-600 text-white' : 'bg-gray-100'
-          }`}
-        >
-          Tech
-        </button>
-        <button
-          type="button"
-          onClick={() => handleCategoryChange('general')}
-          className={`rounded px-3 py-1 text-sm ${
-            currentCategory === 'general' ? 'bg-blue-600 text-white' : 'bg-gray-100'
-          }`}
-        >
-          General
-        </button>
+
+        {CATEGORIES.map((category) => (
+          <button
+            className={`rounded px-3 py-1 text-sm ${
+              currentCategory === category
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-100'
+            }`}
+            key={category}
+            onClick={() => navigate('category', category)}
+            type="button"
+          >
+            {CATEGORY_LABELS[category]}
+          </button>
+        ))}
       </div>
 
       <select
-        value={currentSort || ''}
-        onChange={(e) => handleSortChange(e.target.value)}
+        aria-label="Sort posts"
         className="rounded border px-3 py-1 text-sm"
+        onChange={(event) =>
+          // 'newest' is the default, so it stays out of the URL.
+          navigate(
+            'sort',
+            event.target.value === 'newest' ? '' : event.target.value
+          )
+        }
+        value={currentSort}
       >
-        <option value="">Default order</option>
-        <option value="title">Sort by title</option>
+        {SORT_OPTIONS.map((sort) => (
+          <option key={sort} value={sort}>
+            {SORT_LABELS[sort]}
+          </option>
+        ))}
       </select>
 
-      {(currentCategory || currentSort) && (
+      {hasFilters && (
         <button
-          type="button"
+          className="text-red-600 text-sm hover:underline"
           onClick={clearFilters}
-          className="text-sm text-red-600 hover:underline"
+          type="button"
         >
           Clear filters
         </button>
       )}
     </div>
-  )
+  );
 }
